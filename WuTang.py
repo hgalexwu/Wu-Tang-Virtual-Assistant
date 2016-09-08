@@ -19,15 +19,15 @@ def show_answer(answer):
 
     global label2
     label2 = Tkinter.Label(root, text="The answer you are looking for is:")
-    label2.grid(column=1, row=0, sticky=Tkinter.W+Tkinter.S, padx=5)
+    label2.grid(column=1, row=0, sticky=Tkinter.S, padx=5)
 
     global response
-    response = Tkinter.Label(root, text=answer)
+    response = Tkinter.Label(root, text=answer, wraplength=1000)
     response.grid(column=1, row=1, sticky=Tkinter.N)
 
     global button
     button = Tkinter.Button(root, text="Ask another question", command=return_main)
-    button.grid(column=1, row=1, sticky=Tkinter.S)
+    button.grid(column=1, row=2, sticky=Tkinter.S)
 
 
 def return_main():
@@ -37,7 +37,6 @@ def return_main():
 
     label1.grid(column=1, row=0, sticky=Tkinter.W+Tkinter.S)
     entry.grid(column=1, row=1, sticky=Tkinter.N)
-
 
 
 def initialize_assistant(input):
@@ -66,7 +65,7 @@ def create_gui():
     global root
     root = Tkinter.Tk()
     # Make window non resizable
-    root.resizable(0, 0)
+    root.resizable(width=False, height=False)
 
     # Set Wu tang avatar image
     img = Image.open("kid.jpg")
@@ -81,7 +80,7 @@ def create_gui():
 
     global label1
     label1 = Tkinter.Label(root, text="Hello. I am Wu Tang\nI'm the World's Greatest Digital Assistant\nHow can I help you today?")
-    label1.grid(column=1, row=0, sticky=Tkinter.W+Tkinter.S)
+    label1.grid(column=1, row=0, padx=5, sticky=Tkinter.W+Tkinter.S)
 
     global entry
     entry = Tkinter.Entry(root)
@@ -91,6 +90,7 @@ def create_gui():
 
     # Start GUI
     root.mainloop()
+
 
 
 if __name__ == '__main__':
