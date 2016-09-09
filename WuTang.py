@@ -1,5 +1,8 @@
-import wolframalpha, wikipedia, Tkinter, PIL
+import wolframalpha, wikipedia, Tkinter, PIL, os
 from PIL import Image, ImageTk
+import pyttsx
+import threading
+
 
 # WolframAlpha developer's API APP_ID
 APP_ID = "LG74T5-V98P5V55TK"
@@ -7,6 +10,7 @@ APP_ID = "LG74T5-V98P5V55TK"
 
 def get_answer(event):
     # 1.0 means first line, 0th character
+    global answer
     answer = initialize_assistant(event.widget.get())
     # Clear text
     event.widget.delete(0, "end")
@@ -28,7 +32,8 @@ def show_answer(answer):
     global button
     button = Tkinter.Button(root, text="Ask another question", command=return_main)
     button.grid(column=1, row=2, sticky=Tkinter.S)
-
+    t = threading.Thread(target=speak)
+    t.start()
 
 def return_main():
     label2.destroy()
@@ -40,18 +45,18 @@ def return_main():
 
 
 def initialize_assistant(input):
-
+    global result
     # try to get a wolframalpha result first, then a wikipedia result if it doesn't work
     try:
         # WolframAlpha result
         client = wolframalpha.Client(APP_ID)
-        wolfram_answer = next(client.query(input).results).text
-        return wolfram_answer
+        result = next(client.query(input).results).text
+        return result
     except:
-        if (len(input) > 3) and input.split(" ")[0] == "who" and input.split(" ")[1] == "is":
+        if (len(input) > 3) and input.split(" ")[0].lower() == "who" and input.split(" ")[1].lower() == "is":
             query = ""
             for word in input.split(" "):
-                if word != "who" and word != "is":
+                if word.lower() != "who" and word.lower() != "is":
                     query += word + " "
             result = wikipedia.summary(query)
         else:
@@ -74,7 +79,6 @@ def create_gui():
     panel1 = Tkinter.Label(root, image=img)
     panel1.grid(column=0, rowspan=2)
 
-
     # Set Title
     root.title("Wu Tang, the Python Digital Assistant")
 
@@ -87,13 +91,17 @@ def create_gui():
     entry.bind('<Return>', get_answer)
     entry.grid(column=1, row=1, sticky=Tkinter.N)
 
-
     # Start GUI
     root.mainloop()
 
 
+def speak():
+    engine = pyttsx.init()
+    engine.say(answer)
+    engine.startLoop()
 
 if __name__ == '__main__':
     create_gui()
+
 
 
