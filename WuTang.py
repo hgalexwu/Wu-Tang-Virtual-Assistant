@@ -1,7 +1,8 @@
-import wolframalpha, wikipedia, Tkinter, PIL, os
+import wolframalpha, wikipedia, Tkinter, PIL, pyttsx, threading
 from PIL import Image, ImageTk
-import pyttsx
-import threading
+import speech_recognition as sr
+
+
 
 
 # WolframAlpha developer's API APP_ID
@@ -42,6 +43,18 @@ def return_main():
 
     label1.grid(column=1, row=0, sticky=Tkinter.W+Tkinter.S)
     entry.grid(column=1, row=1, sticky=Tkinter.N)
+
+
+def speech_recognizer():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        audio = r.listen(source)
+        try:
+            entry.insert(0, r.recognize_google(audio))
+        except sr.UnknownValueError:
+            show_answer("Sorry, Google Speech recognition couldn't understand the audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 def initialize_assistant(input):
@@ -90,6 +103,10 @@ def create_gui():
     entry = Tkinter.Entry(root)
     entry.bind('<Return>', get_answer)
     entry.grid(column=1, row=1, sticky=Tkinter.N)
+
+    global speechButton
+    speechButton = Tkinter.Button(root, text="Use Voice", command=speech_recognizer)
+    speechButton.grid(column=1, row=2, sticky=Tkinter.S)
 
     # Start GUI
     root.mainloop()
